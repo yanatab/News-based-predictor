@@ -1,4 +1,3 @@
-
 from pathlib import Path
 import sqlite3
 
@@ -32,9 +31,7 @@ stop_words = [
 def prepare_dataset():
     candles = pd.read_csv(DATA / "processed.csv", parse_dates=["datetime"])
     with sqlite3.connect(DATA / "ria_news_all_2025.db") as conn:
-        news = pd.read_sql_query(
-            "SELECT published, title, full_text FROM news ORDER BY published", conn
-        )
+        news = pd.read_sql_query("SELECT published, title, full_text FROM news ORDER BY published", conn)
 
     candles = candles.sort_values("datetime").reset_index(drop=True)
     candles = candles.dropna(subset=["datetime", "target"] + MARKET_FEATURES)
@@ -89,8 +86,7 @@ def main():
         for p in word_positions:
             word = feature_names[p].removeprefix("text__")
             print(f"  {word:<35} {coefficients[p]:+.3f}")
-            rows.append({"class": class_label,
-                             "word": word, "coefficient": coefficients[p]})
+            rows.append({"class": class_label, "word": word, "coefficient": coefficients[p]})
 
     reports = ROOT / "reports"
     reports.mkdir(exist_ok=True)
